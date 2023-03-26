@@ -12,6 +12,7 @@ import {
   ListItem,
   Typography,
 } from '@mui/joy';
+import { v4 as uuidv4 } from 'uuid';
 
 interface GPTResponseType {
   message: string;
@@ -174,7 +175,7 @@ export default function Home() {
                   resultsArray.map((result: string, index: number) => (
                     <>
                       <ListItem
-                        key={index}
+                        key={uuidv4()}
                         sx={{
                           display: 'flex',
                           alignItems: 'space-between',
@@ -190,7 +191,9 @@ export default function Home() {
                         </Button>
                       </ListItem>
                       {GPTAnswers[index] && (
-                        <ListItem>{GPTAnswers[index] as string}</ListItem>
+                        <ListItem key={uuidv4()}>
+                          {GPTAnswers[index] as string}
+                        </ListItem>
                       )}
                       <ListDivider inset='gutter' />
                     </>
