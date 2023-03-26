@@ -27,7 +27,9 @@ export default function Home() {
   const [resultsArray, setResultsArray] = useState<string[] | null>(null);
   const [GPTAnswers, setGPTAnswers] = useState<Array<unknown>>([]);
   const [isFetching, setFetching] = useState(false);
-  const [isFetchingGPT, setFetchingGPT] = useState(false);
+  const [isFetchingGPTIndex, setFetchingGPTIndex] = useState<number | null>(
+    null
+  );
   const [messages, setMessages] = useState([
     {
       message: "Hello, I'm ChatGPT! Ask me anything!",
@@ -58,6 +60,7 @@ export default function Home() {
   };
 
   const handleGPTQuestion = async (message: string, index: number) => {
+    setFetchingGPTIndex(index);
     const newMessage = {
       message: message,
       direction: 'outgoing',
@@ -65,8 +68,8 @@ export default function Home() {
     };
     const newMessages = [...messages, newMessage];
 
-    setFetchingGPT(true);
     await handleGPTMessage(newMessages, index);
+    setFetchingGPTIndex(null);
   };
 
   useEffect(() => {
@@ -115,7 +118,6 @@ export default function Home() {
         const newAnswers: Array<unknown> = [...GPTAnswers];
         newAnswers[index] = data.choices[0].message.content;
         setGPTAnswers(newAnswers);
-        setFetchingGPT(false);
       });
   };
 
@@ -181,10 +183,12 @@ export default function Home() {
                           alignItems: 'space-between',
                         }}
                       >
-                        <Typography flexGrow={1}>{result}</Typography>
+                        <Typography flexGrow={1} sx={{ fontWeight: 500 }}>
+                          {result}
+                        </Typography>
                         <Button
                           variant='outlined'
-                          // loading={isFetching}
+                          loading={index === isFetchingGPTIndex}
                           onClick={() => handleGPTQuestion(result, index)}
                         >
                           Explain
@@ -192,7 +196,11 @@ export default function Home() {
                       </ListItem>
                       {GPTAnswers[index] && (
                         <ListItem key={uuidv4()}>
-                          {GPTAnswers[index] as string}
+                          <Typography
+                            sx={{ fontWeight: 200, fontStyle: 'italic' }}
+                          >
+                            {GPTAnswers[index] as string}
+                          </Typography>
                         </ListItem>
                       )}
                       <ListDivider inset='gutter' />
