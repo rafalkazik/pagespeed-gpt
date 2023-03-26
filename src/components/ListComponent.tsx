@@ -8,6 +8,7 @@ import {
   ListItem,
   Typography,
 } from '@mui/joy';
+import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface GPTResponseType {
@@ -48,6 +49,10 @@ export const ListComponent = ({
     await handleGPTMessage(newMessages, index);
     setFetchingGPTIndex(null);
   };
+
+  useEffect(() => {
+    setGPTAnswers([]);
+  }, [resultsArray]);
 
   const systemMessage = {
     role: 'system',
