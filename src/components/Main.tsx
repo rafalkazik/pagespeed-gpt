@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Grid } from '@mui/joy';
+import { Grid, Typography } from '@mui/joy';
 import { FormComponent } from './FormComponent';
 import { ListComponent } from './ListComponent';
 
@@ -42,6 +42,16 @@ export const Main = () => {
         spacing={2}
         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
       >
+        <Typography
+          level='h1'
+          sx={{
+            my: 2,
+            fontSize: 'clamp(22px, 3.5vw, 42px)',
+            fontWeight: 700,
+          }}
+        >
+          Pagespeed-GPT
+        </Typography>
         <Grid xs={10} md={8}>
           <FormComponent
             url={url}

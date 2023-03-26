@@ -1,5 +1,12 @@
-import { ChangeEvent, FormEvent } from 'react';
-import { Button, FormControl, FormLabel, Grid, Input } from '@mui/joy';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Grid,
+  Input,
+} from '@mui/joy';
 
 interface FormComponentProps {
   url: string;
@@ -15,18 +22,29 @@ export const FormComponent = ({
   setResults,
 }: FormComponentProps) => {
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+    urlRegex.test(event.target.value)
+      ? setIsUrlValid(true)
+      : setIsUrlValid(false);
     setUrl(event.target.value);
   };
 
+  const [isUrlValid, setIsUrlValid] = useState<boolean | null>(true);
+
+  const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFetching(true);
-    const response = await fetch(
-      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}`
-    );
-    const data = await response.json();
-    setResults(data.lighthouseResult.audits);
-    setFetching(false);
+    if (!isUrlValid) {
+      event.preventDefault();
+    } else {
+      event.preventDefault();
+      setFetching(true);
+      const response = await fetch(
+        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}`
+      );
+      const data = await response.json();
+      setResults(data.lighthouseResult.audits);
+      setFetching(false);
+    }
   };
 
   return (
@@ -37,14 +55,20 @@ export const FormComponent = ({
           <Input
             type='text'
             id='url-input'
-            placeholder='Type in here…'
+            placeholder='https://example.com'
             onChange={handleInput}
+            error={!isUrlValid}
+            endDecorator={
+              <Button type='submit' variant='solid'>
+                Analyze
+              </Button>
+            }
           />
-        </Grid>
-        <Grid>
-          <Button type='submit' variant='solid'>
-            Analyze
-          </Button>
+          {!isUrlValid && (
+            <FormHelperText>
+              Invalid URL format. Please try again.
+            </FormHelperText>
+          )}
         </Grid>
       </Grid>
     </FormControl>
