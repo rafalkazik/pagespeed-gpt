@@ -33,10 +33,12 @@ export const FormComponent = ({
   const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    if (!isUrlValid) {
+    if (!isUrlValid || !urlRegex.test(url)) {
       event.preventDefault();
+      setIsUrlValid(false);
     } else {
       event.preventDefault();
+      setIsUrlValid(true);
       setFetching(true);
       const response = await fetch(
         `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}`

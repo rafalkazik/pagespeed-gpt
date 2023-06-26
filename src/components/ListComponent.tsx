@@ -52,7 +52,7 @@ export const ListComponent = ({
 
   useEffect(() => {
     setGPTAnswers([]);
-  }, [resultsArray]);
+  }, [resultsArray, setGPTAnswers]);
 
   const systemMessage = {
     role: 'system',
